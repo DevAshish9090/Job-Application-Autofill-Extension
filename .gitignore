@@ -1,0 +1,18 @@
+# Secrets — never commit these
+backend/.env
+apikey.txt
+*.key
+
+# Python
+backend/.venv/
+.venv/
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Backups exported from the extension
+autoapply-backup-*.json

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>AutoApply</title>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-label="AutoApply">
+          <defs>
+            <linearGradient id="bm" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#818cf8"/>
+              <stop offset="1" stop-color="#4f46e5"/>
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="116" height="116" rx="30" fill="url(#bm)"/>
+          <g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M43 98 L64 34 L85 98"/>
+            <line x1="53" y1="74" x2="75" y2="74"/>
+          </g>
+        </svg>
+      </span>
+      <span class="brand-name">AutoApply</span>
+    </div>
+    <span id="backend-dot" class="dot" title="Backend status"></span>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="autofill">Autofill</button>
+    <button class="tab" data-tab="profile">Profile</button>
+    <button class="tab" data-tab="match">Match</button>
+    <button class="tab" data-tab="apps">Apps</button>
+    <button class="tab" data-tab="stats">Stats</button>
+  </nav>
+
+  <main>
+    <!-- AUTOFILL TAB -->
+    <section id="tab-autofill" class="panel active">
+      <div id="scan-status" class="scan-card">
+        <div class="scan-line">Open a job application page, then reopen this popup.</div>
+      </div>
+      <button id="btn-autofill" class="btn primary" disabled>Autofill this page</button>
+      <div id="autofill-result" class="hint"></div>
+
+      <div class="divider"></div>
+
+      <h3 class="section-title">Save this application</h3>
+      <div class="grid2">
+        <input id="app-company" class="field" placeholder="Company" />
+        <input id="app-role" class="field" placeholder="Role" />
+      </div>
+      <input id="app-url" class="field" placeholder="Job URL" />
+      <div class="grid2">
+        <select id="app-status" class="field">
+          <option>Saved</option>
+          <option selected>Applied</option>
+          <option>OA</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Rejected</option>
+          <option>Withdrawn</option>
+        </select>
+        <button id="btn-save-app" class="btn">Save</button>
+      </div>
+      <div id="dup-warn" class="warn hidden"></div>
+
+      <div class="divider"></div>
+
+      <h3 class="section-title">AI answer helper</h3>
+      <textarea id="ai-question" class="field" rows="2"
+        placeholder="Paste a question, e.g. Why do you want to join us?"></textarea>
+      <input id="ai-company" class="field" placeholder="Company (optional)" />
+      <button id="btn-ai" class="btn">Generate answer</button>
+      <textarea id="ai-output" class="field" rows="5" placeholder="Answer appears here…"></textarea>
+
+      <div class="divider"></div>
+      <h3 class="section-title">Remember answers</h3>
+      <button id="btn-capture" class="btn">Capture answers on this page</button>
+      <div id="capture-list"></div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section id="tab-profile" class="panel">
+      <div class="upload-row">
+        <label class="btn upload-btn">
+          Upload resume (PDF/DOCX)
+          <input id="resume-file" type="file" accept=".pdf,.docx,.txt" hidden />
+        </label>
+        <span id="upload-status" class="hint"></span>
+      </div>
+      <div id="missing-banner" class="warn hidden"></div>
+
+      <div class="profile-grid" id="profile-grid"></div>
+      <button id="btn-save-profile" class="btn primary">Save profile</button>
+      <div id="profile-saved" class="hint"></div>
+
+      <div class="divider"></div>
+      <h3 class="section-title">Saved answers</h3>
+      <div id="qa-list" class="qa-list"></div>
+      <div class="grid2">
+        <input id="qa-q" class="field" placeholder="Question" />
+        <input id="qa-a" class="field" placeholder="Your answer" />
+      </div>
+      <button id="qa-add" class="btn">Add saved answer</button>
+
+      <div class="divider"></div>
+      <h3 class="section-title">Backup</h3>
+      <div class="grid2">
+        <button id="btn-export" class="btn">Export data</button>
+        <label class="btn upload-btn" style="text-align:center; display:block;">Import data
+          <input id="import-file" type="file" accept=".json,application/json" hidden />
+        </label>
+      </div>
+      <div id="backup-status" class="hint"></div>
+      <button id="btn-reset" class="btn btn-danger" style="width:100%; margin-top:8px;">Reset all data</button>
+    </section>
+
+    <!-- MATCH TAB -->
+    <section id="tab-match" class="panel">
+      <input id="match-company" class="field" placeholder="Company (optional)" />
+      <textarea id="jd-input" class="field" rows="5"
+        placeholder="Paste the job description…"></textarea>
+      <div class="grid2">
+        <button id="btn-grab-jd" class="btn">Use page text</button>
+        <button id="btn-analyze" class="btn primary" style="margin-top:0;">Analyze fit</button>
+      </div>
+      <div id="match-result"></div>
+
+      <div class="divider"></div>
+      <h3 class="section-title">Cover letter</h3>
+      <div class="grid2">
+        <select id="cl-tone" class="field">
+          <option value="short">Short</option>
+          <option value="normal" selected>Normal</option>
+          <option value="formal">Formal</option>
+        </select>
+        <button id="btn-cover" class="btn">Generate</button>
+      </div>
+      <textarea id="cl-output" class="field" rows="8" placeholder="Cover letter appears here…"></textarea>
+    </section>
+
+    <!-- APPLICATIONS TAB -->
+    <section id="tab-apps" class="panel">
+      <div class="apps-toolbar">
+        <input id="apps-search" class="field" placeholder="Search company / role…" />
+      </div>
+      <div id="apps-list" class="apps-list"></div>
+      <div id="apps-empty" class="hint">No applications saved yet.</div>
+    </section>
+
+    <!-- ANALYTICS TAB -->
+    <section id="tab-stats" class="panel">
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="divider"></div>
+      <h3 class="section-title">Funnel</h3>
+      <div id="funnel"></div>
+      <div class="divider"></div>
+      <h3 class="section-title">Response rate by role</h3>
+      <div id="role-breakdown" class="hint">Save applications with roles to see this.</div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
