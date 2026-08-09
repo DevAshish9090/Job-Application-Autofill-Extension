@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="extension/icons/icon128.png" width="88" alt="AutoApply logo" />
+<img src="extension/icons/icon128.png" width="84" alt="AutoApply logo" />
 
 # AutoApply
 
@@ -10,21 +10,32 @@ A Chrome/Brave extension + FastAPI backend that turns a one-time resume upload i
 reusable candidate profile, then intelligently fills application forms across job portals —
 handling the messy real-world cases most autofillers choke on.
 
+<p>
+  <img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Manifest V3" />
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/LLM-Groq-F55036?style=for-the-badge" alt="Groq" />
+  <img src="https://img.shields.io/badge/License-MIT-3DA639?style=for-the-badge" alt="MIT License" />
+</p>
+
 </div>
 
 ---
 
 ## Screenshots
 
-<p align="center">
-  <img src="docs/screenshots/autofill.png" width="150" alt="Autofill" />
-  <img src="docs/screenshots/profile.png"  width="150" alt="Profile" />
-  <img src="docs/screenshots/match.png"    width="150" alt="Match" />
-  <img src="docs/screenshots/apps.png"     width="150" alt="Applications" />
-  <img src="docs/screenshots/stats.png"    width="150" alt="Analytics" />
-</p>
-
-<p align="center"><sub>Autofill&nbsp;&nbsp;·&nbsp;&nbsp;Profile&nbsp;&nbsp;·&nbsp;&nbsp;Match&nbsp;&nbsp;·&nbsp;&nbsp;Applications&nbsp;&nbsp;·&nbsp;&nbsp;Analytics</sub></p>
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/screenshots/autofill.png" width="250" /><br/><sub><b>Autofill</b></sub></td>
+    <td align="center"><img src="docs/screenshots/profile.png"  width="250" /><br/><sub><b>Profile</b></sub></td>
+    <td align="center"><img src="docs/screenshots/match.png"    width="250" /><br/><sub><b>Match</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/apps.png"  width="250" /><br/><sub><b>Applications</b></sub></td>
+    <td align="center"><img src="docs/screenshots/stats.png" width="250" /><br/><sub><b>Analytics</b></sub></td>
+    <td></td>
+  </tr>
+</table>
 
 ---
 
@@ -38,7 +49,7 @@ handling the messy real-world cases most autofillers choke on.
 - **Job-fit analysis.** Paste or pull a job description and get a match score, matched vs missing skills, relevant projects, and a verdict.
 - **Cover letters & AI answers.** Generate grounded, specific answers and cover letters from your profile + the job.
 - **Application tracking + analytics.** Save each application with a status, then see totals, a funnel, and response rates by role.
-- **Privacy first.** Your profile, saved answers, and application history live in the browser (`chrome.storage.local`). Backup/restore is one click.
+- **Privacy first.** Your profile, saved answers, and application history live in the browser (`chrome.storage.local`). Backup/restore/reset in one click.
 
 ---
 
@@ -114,4 +125,4 @@ posting, click **Autofill this page**, review, and submit. Then **Save this appl
 
 ## License
 
-MIT — personal / portfolio project. Not affiliated with any job portal.
+Released under the [MIT License](LICENSE). Personal / portfolio project — not affiliated with any job portal.
