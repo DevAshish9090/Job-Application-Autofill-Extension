@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AutoApply — Test Form</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: #f3f4f6; color: #111827; margin: 0; padding: 32px 16px; }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px; margin-bottom: 18px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; color: #6b7280; margin: 0 0 14px; }
+  .sub { color: #6b7280; margin: 0 0 20px; }
+  .lbl { font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block; }
+  input[type=text], input[type=email], input[type=tel], input[type=url], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 9px;
+    font-size: 14px; font-family: inherit; margin-bottom: 16px; background: #fff; }
+  textarea { resize: vertical; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .radio-group { margin-bottom: 16px; }
+  .radio-q { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .radio-opt { display: inline-flex; align-items: center; gap: 6px; margin-right: 18px; font-size: 14px; }
+  .note { font-size: 12px; color: #9ca3af; margin: -8px 0 16px; }
+  .btn { padding: 12px 18px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn.primary { background: #6366f1; color: #fff; }
+  .btn.ghost { background: #eef2ff; color: #4338ca; }
+  #out { white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+         background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 10px; max-height: 340px; overflow: auto; }
+  .pass { color: #16a34a; } .fail { color: #dc2626; }
+  /* minimal custom (react-select-like) dropdown */
+  .rs { position: relative; margin-bottom: 16px; }
+  .rs-control { min-height: 42px; border: 1px solid #d1d5db; border-radius: 9px; padding: 8px 12px;
+                display: flex; align-items: center; gap: 8px; cursor: text; background: #fff; }
+  .rs-value { color: #111827; }
+  .rs-value:empty::before { content: attr(data-placeholder); color: #9ca3af; }
+  .rs-input { border: none; outline: none; flex: 1; font-size: 14px; padding: 0; margin: 0; min-width: 40px; }
+  .rs-menu { list-style: none; margin: 4px 0 0; padding: 4px; position: absolute; z-index: 10; width: 100%;
+             background: #fff; border: 1px solid #e5e7eb; border-radius: 9px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+  .rs-menu[hidden] { display: none; }
+  .rs-menu li { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  .rs-menu li:hover { background: #eef2ff; }
+  .rs-menu li[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>AutoApply — Test Form</h1>
+    <p class="sub">A fake application form covering every tricky case. Fill your profile in the extension,
+      run <b>Autofill this page</b>, then click <b>Show captured values</b> at the bottom to see what landed where.</p>
+    <p class="note">Tip for full coverage, set these in your profile / saved answers first:
+      phone <code>+91 9876543210</code>, preferred location <code>Bengaluru</code>,
+      work authorized <code>Yes</code>, needs sponsorship <code>No</code>, will relocate <code>Yes</code>,
+      current company + current role; and two saved answers —
+      "Notice period" → "30 days", "How did you hear about us" → "LinkedIn".</p>
+  </div>
+
+  <!-- Section 1: the camelCase / detached-label trap -->
+  <div class="card">
+    <h2>Personal (detached labels — the SmartRecruit trap)</h2>
+    <div class="row">
+      <div>
+        <div class="lbl-row"><span class="lbl">First Name</span></div>
+        <div class="in"><input type="text" name="firstName" placeholder="Enter" /></div>
+      </div>
+      <div>
+        <div class="lbl-row"><span class="lbl">Last Name</span></div>
+        <div class="in"><input type="text" name="lastName" placeholder="Enter" /></div>
+      </div>
+    </div>
+    <p class="note">These two have no &lt;label for&gt; and no adjacent label — the extension must read the
+      camelCase <code>name</code> attribute. If they fill with your full name, the fix didn't apply.</p>
+
+    <label class="lbl" for="fullName">Full Name</label>
+    <input type="text" id="fullName" name="fullName" />
+
+    <label class="lbl" for="email">Email</label>
+    <input type="email" id="email" name="email" />
+
+    <div class="row">
+      <div>
+        <label class="lbl" for="mob">Mobile Number</label>
+        <input type="tel" id="mob" name="mobileNumber" maxlength="10" placeholder="10 digits" />
+        <p class="note">maxlength=10 → should drop +91.</p>
+      </div>
+      <div>
+        <label class="lbl" for="intlphone">Phone (with country code)</label>
+        <input type="tel" id="intlphone" name="phone" placeholder="+country" />
+        <p class="note">no limit → should keep +91.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="lbl-row"><span class="lbl">LinkedIn</span></div>
+        <div class="in"><input type="url" name="linkedInProfile" /></div>
+      </div>
+      <div>
+        <label class="lbl" for="gh">GitHub</label>
+        <input type="url" id="gh" name="github" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: education -->
+  <div class="card">
+    <h2>Education</h2>
+    <label class="lbl" for="uni">University / College</label>
+    <input type="text" id="uni" name="university" />
+    <div class="row">
+      <div>
+        <label class="lbl" for="deg">Degree</label>
+        <input type="text" id="deg" name="degree" />
+      </div>
+      <div>
+        <label class="lbl" for="branch">Branch / Major</label>
+        <input type="text" id="branch" name="major" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label class="lbl" for="cgpa">CGPA</label>
+        <input type="text" id="cgpa" name="cgpa" />
+      </div>
+      <div>
+        <label class="lbl" for="gy">Graduation Year</label>
+        <input type="text" id="gy" name="graduationYear" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: dropdowns -->
+  <div class="card">
+    <h2>Dropdowns (native + custom)</h2>
+    <label class="lbl" for="country">Country</label>
+    <select id="country" name="country">
+      <option value="">Select…</option>
+      <option>India</option>
+      <option>United States</option>
+      <option>United Kingdom</option>
+      <option>Germany</option>
+    </select>
+
+    <span class="lbl">Preferred Location (custom dropdown)</span>
+    <div class="rs" id="locWidget">
+      <div class="rs-control" role="combobox" aria-haspopup="listbox" aria-label="Preferred Location">
+        <span class="rs-value" data-placeholder="Select…"></span>
+        <input class="rs-input" aria-hidden="true" />
+      </div>
+      <ul class="rs-menu" role="listbox" hidden>
+        <li role="option">Bengaluru</li>
+        <li role="option">Hyderabad</li>
+        <li role="option">Delhi NCR</li>
+        <li role="option">Mumbai</li>
+        <li role="option">Remote</li>
+      </ul>
+    </div>
+    <p class="note">This mimics Greenhouse/Lever's react-select. Autofill should open it and pick the match.</p>
+  </div>
+
+  <!-- Section 4: yes/no radio questions -->
+  <div class="card">
+    <h2>Eligibility (radio questions)</h2>
+    <div class="radio-group">
+      <div class="radio-q">Are you authorized to work in India?</div>
+      <label class="radio-opt"><input type="radio" name="workAuth" value="Yes" /> Yes</label>
+      <label class="radio-opt"><input type="radio" name="workAuth" value="No" /> No</label>
+    </div>
+    <div class="radio-group">
+      <div class="radio-q">Do you require visa sponsorship?</div>
+      <label class="radio-opt"><input type="radio" name="sponsorship" value="Yes" /> Yes</label>
+      <label class="radio-opt"><input type="radio" name="sponsorship" value="No" /> No</label>
+    </div>
+    <div class="radio-group">
+      <div class="radio-q">Are you willing to relocate?</div>
+      <label class="radio-opt"><input type="radio" name="relocate" value="Yes" /> Yes</label>
+      <label class="radio-opt"><input type="radio" name="relocate" value="No" /> No</label>
+    </div>
+  </div>
+
+  <!-- Section 5: custom questions (Q&A memory) -->
+  <div class="card">
+    <h2>Screening questions (saved-answer memory)</h2>
+    <label class="lbl" for="np">What is your notice period?</label>
+    <input type="text" id="np" name="noticePeriodAnswer" />
+    <label class="lbl" for="hear">How did you hear about us?</label>
+    <input type="text" id="hear" name="source" />
+    <label class="lbl" for="why">Why do you want to join us?</label>
+    <textarea id="why" name="motivation" rows="3"></textarea>
+    <p class="note">First two should fill from saved answers (if you added them). To test capture: type answers
+      here, then use "Capture answers on this page" in the extension.</p>
+  </div>
+
+  <!-- Section 6: shadow DOM + iframe -->
+  <div class="card">
+    <h2>Hidden containers (shadow DOM + iframe)</h2>
+    <div id="shadowHost"></div>
+    <p class="note">"Current Company" above lives inside a shadow root.</p>
+    <iframe id="frame" style="width:100%;border:1px solid #d1d5db;border-radius:9px;height:96px"
+      srcdoc='<label style="font:600 13px sans-serif;display:block;margin:10px 12px 6px">Current Role</label>
+              <input name="currentRole" style="width:calc(100% - 24px);margin:0 12px;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px" />'></iframe>
+    <p class="note">"Current Role" lives inside an iframe.</p>
+  </div>
+
+  <div class="card">
+    <button class="btn primary" id="show">Show captured values</button>
+    <button class="btn ghost" id="reset">Reset form</button>
+    <div id="out" style="margin-top:16px;display:none"></div>
+  </div>
+</div>
+
+<script>
+  // ---- shadow DOM field ----
+  const host = document.getElementById("shadowHost");
+  const shadow = host.attachShadow({ mode: "open" });
+  shadow.innerHTML =
+    '<label style="font:600 13px sans-serif;display:block;margin-bottom:6px">Current Company</label>' +
+    '<input name="currentCompany" style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:9px;font-size:14px" />';
+
+  // ---- custom dropdown behavior ----
+  const widget = document.getElementById("locWidget");
+  const control = widget.querySelector(".rs-control");
+  const input = widget.querySelector(".rs-input");
+  const menu = widget.querySelector(".rs-menu");
+  const valueEl = widget.querySelector(".rs-value");
+  const opts = Array.from(menu.querySelectorAll("li"));
+  function openMenu() { menu.hidden = false; }
+  function closeMenu() { menu.hidden = true; input.value = ""; opts.forEach(o => o.hidden = false); }
+  control.addEventListener("mousedown", () => { openMenu(); setTimeout(() => input.focus(), 0); });
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase();
+    opts.forEach(o => (o.hidden = !o.textContent.toLowerCase().includes(q)));
+    openMenu();
+  });
+  opts.forEach(o => o.addEventListener("click", () => {
+    valueEl.textContent = o.textContent;
+    widget.dataset.value = o.textContent;
+    closeMenu();
+  }));
+  document.addEventListener("mousedown", (e) => { if (!widget.contains(e.target)) closeMenu(); });
+
+  // ---- capture / report ----
+  function val(sel, root = document) { const el = root.querySelector(sel); return el ? el.value : "(missing)"; }
+  function radioVal(name) {
+    const r = document.querySelector(`input[name="${name}"]:checked`);
+    return r ? r.value : "(none)";
+  }
+  function line(label, got, ok) {
+    const mark = ok === undefined ? "  " : ok ? "PASS" : "FAIL";
+    const cls = ok === undefined ? "" : ok ? "pass" : "fail";
+    return `<span class="${cls}">${mark}</span>  ${label.padEnd(22)} ${got}`;
+  }
+  document.getElementById("show").addEventListener("click", () => {
+    const frameDoc = document.getElementById("frame").contentDocument;
+    const first = val('input[name="firstName"]');
+    const last = val('input[name="lastName"]');
+    const mob = val('input[name="mobileNumber"]');
+    const intl = val('input[name="phone"]');
+    const rows = [
+      line("First Name", first, first !== "(missing)" && !first.includes(" ")),
+      line("Last Name", last, last !== "(missing)" && !last.includes(" ")),
+      line("Full Name", val('input[name="fullName"]')),
+      line("Email", val('input[name="email"]')),
+      line("Mobile (10-digit)", mob, /^\d{0,10}$/.test(mob) && !mob.includes("+")),
+      line("Phone (intl)", intl),
+      line("LinkedIn", val('input[name="linkedInProfile"]')),
+      line("GitHub", val('input[name="github"]')),
+      line("University", val('input[name="university"]')),
+      line("Degree", val('input[name="degree"]')),
+      line("Major", val('input[name="major"]')),
+      line("CGPA", val('input[name="cgpa"]')),
+      line("Grad Year", val('input[name="graduationYear"]')),
+      line("Country", val('select[name="country"]')),
+      line("Preferred Location", widget.dataset.value || "(none)", !!widget.dataset.value),
+      line("Work authorized", radioVal("workAuth")),
+      line("Sponsorship", radioVal("sponsorship")),
+      line("Relocate", radioVal("relocate")),
+      line("Notice period", val('input[name="noticePeriodAnswer"]')),
+      line("How did you hear", val('input[name="source"]')),
+      line("Why join (textarea)", val('textarea[name="motivation"]')),
+      line("Current Company (shadow)", val('input[name="currentCompany"]', shadow),
+           val('input[name="currentCompany"]', shadow) !== "(missing)"),
+      line("Current Role (iframe)", frameDoc ? val('input[name="currentRole"]', frameDoc) : "(no frame)"),
+    ];
+    const out = document.getElementById("out");
+    out.style.display = "block";
+    out.innerHTML = rows.join("\n");
+  });
+  document.getElementById("reset").addEventListener("click", () => {
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      if (el.type === "radio") el.checked = false; else el.value = "";
+    });
+    shadow.querySelector("input").value = "";
+    const fd = document.getElementById("frame").contentDocument;
+    if (fd) fd.querySelector("input").value = "";
+    valueEl.textContent = ""; delete widget.dataset.value;
+    document.getElementById("out").style.display = "none";
+  });
+</script>
+</body>
+</html>
