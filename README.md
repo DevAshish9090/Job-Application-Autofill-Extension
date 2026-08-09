@@ -22,23 +22,6 @@ handling the messy real-world cases most autofillers choke on.
 
 ---
 
-## Screenshots
-
-<table align="center">
-  <tr>
-    <td align="center"><img src="docs/screenshots/autofill.png" width="250" /><br/><sub><b>Autofill</b></sub></td>
-    <td align="center"><img src="docs/screenshots/profile.png"  width="250" /><br/><sub><b>Profile</b></sub></td>
-    <td align="center"><img src="docs/screenshots/match.png"    width="250" /><br/><sub><b>Match</b></sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/screenshots/apps.png"  width="250" /><br/><sub><b>Applications</b></sub></td>
-    <td align="center"><img src="docs/screenshots/stats.png" width="250" /><br/><sub><b>Analytics</b></sub></td>
-    <td></td>
-  </tr>
-</table>
-
----
-
 ## What it does
 
 - **Resume &rarr; profile.** Upload a PDF/DOCX and an LLM extracts your details into a structured, editable profile.
@@ -126,3 +109,20 @@ posting, click **Autofill this page**, review, and submit. Then **Save this appl
 ## License
 
 Released under the [MIT License](LICENSE). Personal / portfolio project — not affiliated with any job portal.
+
+---
+
+## Screenshots
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/screenshots/autofill.png" width="250" /><br/><sub><b>Autofill</b></sub></td>
+    <td align="center"><img src="docs/screenshots/profile.png"  width="250" /><br/><sub><b>Profile</b></sub></td>
+    <td align="center"><img src="docs/screenshots/match.png"    width="250" /><br/><sub><b>Match</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/apps.png"  width="250" /><br/><sub><b>Applications</b></sub></td>
+    <td align="center"><img src="docs/screenshots/stats.png" width="250" /><br/><sub><b>Analytics</b></sub></td>
+    <td></td>
+  </tr>
+</table>
