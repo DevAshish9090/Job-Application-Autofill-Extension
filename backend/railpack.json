@@ -4,15 +4,14 @@
   "packages": {
     "python": "3.12"
   },
-  "buildAptPackages": [],
   "steps": {
     "install": {
       "commands": [
-        "pip install -r backend/requirements.txt"
+        "pip install -r requirements.txt"
       ]
     }
   },
   "deploy": {
-    "startCommand": "uvicorn main:app --host 0.0.0.0 --port $PORT --app-dir backend"
+    "startCommand": "uvicorn main:app --host 0.0.0.0 --port $PORT"
   }
 }
