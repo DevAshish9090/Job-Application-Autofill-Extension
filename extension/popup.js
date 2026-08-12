@@ -32,8 +32,12 @@ const PROFILE_FIELDS = [
   ["noticePeriod", "Notice period"],
   ["expectedSalary", "Expected salary"],
   ["preferredLocation", "Preferred location"],
+  ["gender", "Gender"],
   ["projects", "Projects / experience"],
 ];
+
+// Options for the gender dropdown in the profile form.
+const GENDER_OPTIONS = ["", "Male", "Female", "Non-binary", "Prefer not to say"];
 
 // Fields we nag the user about if empty (the common ATS ones)
 const REQUIRED_HINT = ["firstName", "lastName", "email", "phone", "city", "gradYear"];
@@ -51,6 +55,8 @@ function load() {
   return new Promise((res) => {
     chrome.storage.local.get(["profile", "applications", "qaMemory"], (data) => {
       profile = data.profile || {};
+      // Default country to India if it was never set.
+      if (!(profile.country || "").toString().trim()) profile.country = "India";
       applications = data.applications || [];
       qaMemory = data.qaMemory || [];
       res();
@@ -131,6 +137,23 @@ function renderProfile() {
     const row = document.createElement("div");
     row.className = "pf-row";
     row.innerHTML = `<label>${label}</label>`;
+
+    if (key === "gender") {
+      const sel = document.createElement("select");
+      sel.className = "field";
+      for (const opt of GENDER_OPTIONS) {
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt || "— select —";
+        sel.appendChild(o);
+      }
+      sel.value = profile[key] || "";
+      sel.dataset.key = key;
+      row.appendChild(sel);
+      grid.appendChild(row);
+      continue;
+    }
+
     const input = document.createElement(key === "projects" ? "textarea" : "input");
     input.className = "field";
     if (key === "projects") input.rows = 3;

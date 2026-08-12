@@ -15,7 +15,7 @@
     "email", "phone", "linkedin", "github", "leetcode", "portfolio",
     "zip", "cgpa", "gradYear", "experienceYears",
     "workAuthorized", "requiresSponsorship", "willingToRelocate",
-    "noticePeriod", "expectedSalary", "preferredLocation",
+    "noticePeriod", "expectedSalary", "preferredLocation", "gender",
     "firstName", "middleName", "lastName", "currentCompany", "currentRole",
     "college", "degree", "major", "skills",
     "city", "state", "country", "address", "fullName",
@@ -31,7 +31,8 @@
     address: ["address", "street address", "address line", "current address", "residential"],
     city: ["city", "town"],
     state: ["state", "province", "region"],
-    country: ["country", "nationality"],
+    country: ["country", "nationality", "country of residence", "country/region"],
+    gender: ["gender", "gender identity", "sex"],
     zip: ["zip", "postal code", "postcode", "pin code", "zipcode"],
     linkedin: ["linkedin", "linked in"],
     github: ["github", "git hub"],
@@ -325,16 +326,26 @@
     return [...groups.values()].filter((g) => g.length);
   }
 
+  function selectRadio(r) {
+    r.checked = true;
+    r.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    r.dispatchEvent(new Event("change", { bubbles: true }));
+    flash(r);
+    return true;
+  }
+
   function fillRadioGroup(group, value) {
     const t = String(value).toLowerCase().trim();
+    // Pass 1: exact label match. Protects cases where one option is a substring
+    // of another (e.g. "male" is inside "female", "yes" vs "yes, remotely").
+    for (const r of group) {
+      if (radioLabel(r).toLowerCase().trim() === t) return selectRadio(r);
+    }
+    // Pass 2: fuzzy fallback.
     for (const r of group) {
       const lab = radioLabel(r).toLowerCase();
-      if (lab === t || lab.startsWith(t) || (lab && (lab.includes(t) || t.includes(lab)))) {
-        r.checked = true;
-        r.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        r.dispatchEvent(new Event("change", { bubbles: true }));
-        flash(r);
-        return true;
+      if (lab.startsWith(t) || (lab && (lab.includes(t) || t.includes(lab)))) {
+        return selectRadio(r);
       }
     }
     return false;
