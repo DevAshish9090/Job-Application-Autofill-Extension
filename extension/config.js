@@ -1,5 +1,5 @@
 // Point this at your running FastAPI backend.
-// Local dev default. Change to your deployed URL later.
+// Production (Railway).
 window.AUTOAPPLY_CONFIG = {
-  BACKEND_URL: "http://localhost:8000",
+  BACKEND_URL: "https://job-application-autofill-extension-production.up.railway.app",
 };
